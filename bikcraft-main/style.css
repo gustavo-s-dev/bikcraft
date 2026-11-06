@@ -6,10 +6,11 @@
 @import "./global/footer.css";
 
 /* utilidades */
-@import "./home/introducao.css";
+@import "./utilidades/componentes.css";
+@import "./utilidades/formulario.css";
 
 /* home */
-@import "./utilidades/componentes.css";
+@import "./home/introducao.css";
 @import "./home/tecnologia.css";
 @import "./home/parceiros.css";
 @import "./home/depoimento.css";
@@ -26,6 +27,10 @@
 @import "./seguros/seguros.css";
 @import "./seguros/vantagens.css";
 @import "./seguros/perguntas.css";
+
+/* contato */
+@import "./contato/termos.css";
+@import "./contato/lojas.css";
 
 /* termos */
 @import "./termos/termos.css";
