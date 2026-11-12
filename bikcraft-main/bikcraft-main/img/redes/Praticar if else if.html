@@ -1207,75 +1207,76 @@
   <link rel="stylesheet" type="text/css" href="./Praticar if else if_files/644924.44cc407b44.css">
   <link rel="stylesheet" type="text/css" href="./Praticar if else if_files/183950.259386ff00.css">
   <link rel="stylesheet" type="text/css" href="./Praticar if else if_files/292421.dac6b84805.css">
+  <script>document.documentElement.classList.add("js")</script>
 </head>
 
 <body style="--font-ui-size: 16px; --text-4xl: 36px; --text-3xl: 30px; --text-2xl: 24px; --text-xl: 20px; --text-lg: 18px; --text-base: 16px; --text-sm: 14px; --text-xs: 12px; --text-dynamic-isle-row: 14px; --text-heading-lg: 24px; --text-heading-app: 28px; --text-heading-md: 20px; --text-heading-sm: 18px;">
   <script nonce="">
-    (() => {
-      const key = "oai-epic-native-launch";
-      let launch = null;
-      try { launch = JSON.parse(sessionStorage.getItem(key) || "null"); } catch { }
-      function save() {
-        try {
-          if (launch) sessionStorage.setItem(key, JSON.stringify(launch));
-          else sessionStorage.removeItem(key);
-        } catch { launch = null; }
-      }
-      function capture() {
-        const fragment = window.location.hash;
-        if (!fragment) return;
-        window.history.replaceState(window.history.state, "", "/epic/launch");
-        const params = new URLSearchParams(fragment.slice(1));
-        const snapshot = params.get("snapshot");
-        const workspace = params.get("workspace_id");
-        launch = Array.from(params).length === (workspace ? 2 : 1) && (!workspace || /^[A-Za-z0-9_-]{1,128}$/.test(workspace)) && snapshot &&
-          /^[A-Za-z0-9_-]{80,16384}={0,2}$/.test(snapshot)
-          ? { snapshot, workspace, id: crypto.randomUUID(), messageId: null, draftId: null } : null;
-        save();
-      }
-      if (window.location.pathname === "/epic/launch") capture();
-      function pending() {
-        return launch && !launch.draftId && new URLSearchParams(window.location.search).get("epic_launch") === launch.id
-          ? launch.snapshot : null;
-      }
-      window.__oaiEpicNativeLaunch = {
-        get: () => launch?.snapshot ?? null,
-        workspace: () => launch?.workspace ?? null,
-        destination: () => launch ? "/?surface=work&epic_launch=" + launch.id : "/epic/launch",
-        pending,
-        ownsMessage: (messageId) => launch?.messageId === messageId,
-        metadata: (messageId, draftId) => {
-          if (!launch) return;
-          if (draftId != null) {
-            if (launch.draftId ? launch.draftId !== draftId : !pending()) return;
-            launch.draftId = draftId;
-          } else if (launch.messageId !== messageId) return;
-          const changed = launch.messageId !== messageId;
-          launch.messageId = messageId;
-          save();
-          if (changed) window.dispatchEvent(new Event("oai-epic-launch-changed"));
-          return launch ? { epic_launch_snapshot: launch.snapshot } : undefined;
-        },
-        claimAttachmentNotification: (expected) => {
-          if (!launch || launch.snapshot !== expected || launch.attachmentNotified) return false;
-          launch.attachmentNotified = true;
-          save();
-          return true;
-        },
-        clear: (expected) => {
-          if (launch?.snapshot === expected || launch?.messageId === expected) {
-            launch = null;
-            save();
-            window.dispatchEvent(new Event("oai-epic-launch-changed"));
-          }
+      (() => {
+        const key = "oai-epic-native-launch";
+        let launch = null;
+        try { launch = JSON.parse(sessionStorage.getItem(key) || "null"); } catch { }
+        function save() {
+          try {
+            if (launch) sessionStorage.setItem(key, JSON.stringify(launch));
+            else sessionStorage.removeItem(key);
+          } catch { launch = null; }
         }
-      };
-      window.addEventListener("hashchange", () => {
-        if (window.location.pathname !== "/epic/launch" || !window.location.hash) return;
-        capture();
-        window.dispatchEvent(new Event("oai-epic-launch-changed"));
-      });
-    })();
+        function capture() {
+          const fragment = window.location.hash;
+          if (!fragment) return;
+          window.history.replaceState(window.history.state, "", "/epic/launch");
+          const params = new URLSearchParams(fragment.slice(1));
+          const snapshot = params.get("snapshot");
+          const workspace = params.get("workspace_id");
+          launch = Array.from(params).length === (workspace ? 2 : 1) && (!workspace || /^[A-Za-z0-9_-]{1,128}$/.test(workspace)) && snapshot &&
+            /^[A-Za-z0-9_-]{80,16384}={0,2}$/.test(snapshot)
+            ? { snapshot, workspace, id: crypto.randomUUID(), messageId: null, draftId: null } : null;
+          save();
+        }
+        if (window.location.pathname === "/epic/launch") capture();
+        function pending() {
+          return launch && !launch.draftId && new URLSearchParams(window.location.search).get("epic_launch") === launch.id
+            ? launch.snapshot : null;
+        }
+        window.__oaiEpicNativeLaunch = {
+          get: () => launch?.snapshot ?? null,
+          workspace: () => launch?.workspace ?? null,
+          destination: () => launch ? "/?surface=work&epic_launch=" + launch.id : "/epic/launch",
+          pending,
+          ownsMessage: (messageId) => launch?.messageId === messageId,
+          metadata: (messageId, draftId) => {
+            if (!launch) return;
+            if (draftId != null) {
+              if (launch.draftId ? launch.draftId !== draftId : !pending()) return;
+              launch.draftId = draftId;
+            } else if (launch.messageId !== messageId) return;
+            const changed = launch.messageId !== messageId;
+            launch.messageId = messageId;
+            save();
+            if (changed) window.dispatchEvent(new Event("oai-epic-launch-changed"));
+            return launch ? { epic_launch_snapshot: launch.snapshot } : undefined;
+          },
+          claimAttachmentNotification: (expected) => {
+            if (!launch || launch.snapshot !== expected || launch.attachmentNotified) return false;
+            launch.attachmentNotified = true;
+            save();
+            return true;
+          },
+          clear: (expected) => {
+            if (launch?.snapshot === expected || launch?.messageId === expected) {
+              launch = null;
+              save();
+              window.dispatchEvent(new Event("oai-epic-launch-changed"));
+            }
+          }
+        };
+        window.addEventListener("hashchange", () => {
+          if (window.location.pathname !== "/epic/launch" || !window.location.hash) return;
+          capture();
+          window.dispatchEvent(new Event("oai-epic-launch-changed"));
+        });
+      })();
   </script>
   <div id="root"><!--$--><span aria-hidden="true" hidden=""></span><!--$--><!--$--><!--$-->
     <div class="relative flex flex-col Layout-SYw9n4" data-app-shell-compact-page-gutter="true" data-app-shell-page-surface="false" data-app-shell-feature-navigation="false" data-app-shell-frame="true" data-app-shell-application-menu-bar="false" data-app-shell-responsive-sidebar="true" data-app-shell-sidebar-open="true" data-app-shell-page-sidebar="false" style="--app-shell-navigation-rail-width:52px;--app-shell-application-menu-height:0px;--spacing-token-safe-header-left:6px;--spacing-token-safe-header-right:0px;width:calc(100vw / var(--codex-window-zoom) - var(--debug-panel-width, 0px));margin-left:var(--debug-panel-left-width, 0px);margin-right:calc(var(--debug-panel-width, 0px) - var(--debug-panel-left-width, 0px));height:calc(100svh / var(--codex-window-zoom));zoom:var(--codex-window-zoom);--app-shell-root-banner-height:0px;--app-shell-animated-left-panel-width:340px">
